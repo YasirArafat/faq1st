@@ -12,7 +12,6 @@ namespace ConsoleApp
             var result = new List<int>();
 
             ranked = ranked.OrderByDescending(i => i).ToList();
-            player.Sort();
             Dictionary<int, int> rankedIndexes = new Dictionary<int, int>();
             int k = 1;
             for (int i = 0; i < ranked.Count; i++)
@@ -23,35 +22,22 @@ namespace ConsoleApp
                     k++;
                 }
             }
+
             int j = 0;
             foreach (int p in player)
             {
                 result.Add(j);
-                //rankedIndexes.Where(r=> r.Value >= p && r.Value <p)
-                foreach (KeyValuePair<int, int> rankedIndex in rankedIndexes)
+                if (p >= ranked.Max())
                 {
-                    if (p >= ranked.Max())
-                    {
-                        result[j] = 1;
-                    }
-                    else
-                    {
-                        if (!rankedIndexes.ContainsValue(p))
-                        {
-                            if (rankedIndex.Value < p)
-                            {
-                                result[j] = rankedIndex.Key == 1 ? 1 : rankedIndex.Key - 1;
-                            }
-                            else if (rankedIndex.Value > p)
-                            {
-                                result[j] = rankedIndex.Key + 1;
-                            }
-                            else
-                            {
-                                result[j] = rankedIndex.Key;
-                            }
-                        }
-                    }
+                    result[j] = 1;
+                }
+                else if (rankedIndexes.ContainsValue(p))
+                {
+                    result[j] = rankedIndexes.Where(r => r.Value == p).FirstOrDefault().Key;
+                }
+                else
+                {
+                    result[j] = rankedIndexes.Where(r => r.Value > p).LastOrDefault().Key + 1;
                 }
                 j++;
             }
